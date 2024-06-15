@@ -1,0 +1,89 @@
+Saik Jalal
+CSE202, Fall 2023
+Prof. Oudghiri
+12 November 2023
+Programming Assignment #3
+
+
+This is the write-up portion of progamming assignment #3
+
+Pre: 
+- Direct-mapped
+- 32KB or (32 * 1024 bytes) cache size
+- 800 pixel width (const int IMAGE_WIDTH = 800) 
+- 800 pixel height (const int IMAGE_HEIGHT = 800)
+- 64 bytes cache line size
+- 4 bytes per pixel
+
+Functions: 
+
+Cache Miss Rate = (Number of Cache Misses / Total Memory) * 100
+
+First calculate the number of cache lines: 
+
+32KB/64 bytes --> 32 * 1024 / 64 = 512 cache lines
+
+If each pixel is 4 bytes, that would be there are 16 pixels per cache line (since the cache line size is 64 bytes)
+
+
+
+
+
+applyGamma: 
+- This method accesses the pixels linearly, which means we can use the formula: 
+
+Miss Rate = # of pixels / (pixels per cache line * cache line count)
+
+Miss rate = 640,000 / 16 * 512   --> 640,000 / 8192 = 78.125%
+
+
+
+
+applyTint: 
+
+- This method also accesses the pixels linearly or sequentially, so the calculation will be the same at applyGamma
+
+Miss Rate = # of pixels / (pixels per cache line * cache line count)
+
+Miss rate = 640,000 / 16 * 512   --> 640,000 / 8192 = 78.125%
+
+
+applyBlur: 
+
+- This method would also have the same miss rate as the previous two as the memory accessing pattern for this function is sequential. 
+- This means that there is a miss rate of 50%. 
+
+Optimized Functions: 
+
+applyGammaCodeMotion: 
+
+- This is an optimized verison of applyGamma, in which code motion is being used. 
+- In this optimized function, code motion moves constants 'red', 'green', and 'blue' outside of the loop. 
+- This ensures that these are calculated only once before entering the loop. 
+- As opposed to being calculated every time the loop is traversed as in applyGamma. 
+
+applyGammaUnrolled: 
+- This is an optimized version of applyGamma using loop unrolling. 
+- Loop unrolling is the process in which multiple iterations (previous) are processed in one iteration. 
+- In this modified version, two pixels (in_rows[i][j] and in_rows[i][j + 1]) are processed in a single iteration.
+- Created two if statements within the loop. 
+
+applyGammaEliminateMemoryRef: 
+- This is an optimized version of applyGamma by eliminating memory references. 
+- Here, we store the values of in_rows[i][j].bgra in local variables so it isn't referenced as often in the loop. 
+
+applyTintReduceMemoryRefs: 
+- An optimized version of applyTint by reducing the memory references. 
+- Stores values of in_rows[i][j].bgra and out_rows[i][j].bgra in local arrays first and second. 
+- This way, there are less calls /references made within loop instructions. 
+
+applyBlurCodeMotion: 
+- Applying code motion to applyBlur. 
+- Remove all arithmitic with 0s as it is unneccesary and redundant. 
+
+applyBlurUnrolled: 
+- Applying loop unrolling to applyBlur.
+
+
+
+
